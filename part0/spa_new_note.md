@@ -1,3 +1,4 @@
+```mermaid
 sequenceDiagram
     participant Browser
     participant Server
@@ -9,3 +10,4 @@ sequenceDiagram
     deactivate Server
 
     Note right of Browser: Executes the code to render the notes
+```
