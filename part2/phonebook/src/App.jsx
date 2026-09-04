@@ -1,16 +1,19 @@
 import { useState } from 'react'
+import { useEffect } from 'react'
+import axios from 'axios'
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456', id: 1 },
-    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
-  ])
+  const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [pattern, setNewPattern] = useState('')
 
+  useEffect(() => {
+    axios
+    .get('http://localhost:3001/persons')
+    .then(response => setPersons(response.data))
+  }, []
+  )
   const addPersons = (event) => {
     event.preventDefault()
     const personObject = {
@@ -50,7 +53,7 @@ const App = () => {
       <h3>Add a new</h3>
       <PersonForm onSubmit={addPersons} 
       nameVal={newName} numVal={newNumber} 
-      nameChange={setNewName} numChange={setNewNumber} />
+      nameChange={handleNewName} numChange={handleNewNumber} />
 
       <h3>Numbers</h3>
       <Persons persons={persons} pattern={pattern} />
@@ -71,7 +74,7 @@ const PersonForm = ({onSubmit, nameVal, numVal, nameChange, numChange}) => {
   return(
     <form onSubmit={onSubmit}>
       <div>
-        name: <input value={nameVal} onChange={nameChange}/>
+        name: <input value={nameVal} onChange={nameChange} />
       </div>
       <div>
         number: <input value={numVal} onChange={numChange} /> 
