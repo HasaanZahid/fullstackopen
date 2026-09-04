@@ -44,27 +44,53 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>filter shown with <input value={pattern} onChange={handleNewPattern}/></div>
-      <form onSubmit={addPersons}>
-        <div>
-          name: <input value={newName} onChange={handleNewName}/>
-        </div>
-        <div>
-          number: <input value={newNumber} onChange={handleNewNumber} /> 
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-      <h2>Numbers</h2>
-      <ul>
-        {persons
-        .filter(person => person.name.toLowerCase().includes(pattern.toLowerCase()))
-        .map(person => <li key={person.name}>{person.name} {person.number}</li>)
-        }
-      </ul>
+      
+      <Filter pattern={pattern} onChange={handleNewPattern} />
+      
+      <h3>Add a new</h3>
+      <PersonForm onSubmit={addPersons} 
+      nameVal={newName} numVal={newNumber} 
+      nameChange={setNewName} numChange={setNewNumber} />
+
+      <h3>Numbers</h3>
+      <Persons persons={persons} pattern={pattern} />
 
     </div>
+  )
+}
+
+const Filter = ({pattern, onChange}) => {
+  return (
+    <div>
+    filter shown with <input value={pattern} onChange={onChange}/>
+    </div>
+  )
+}
+
+const PersonForm = ({onSubmit, nameVal, numVal, nameChange, numChange}) => {
+  return(
+    <form onSubmit={onSubmit}>
+      <div>
+        name: <input value={nameVal} onChange={nameChange}/>
+      </div>
+      <div>
+        number: <input value={numVal} onChange={numChange} /> 
+      </div>
+      <div>
+        <button type="submit">add</button>
+      </div>
+    </form>
+  )
+}
+
+const Persons = ({persons, pattern}) => {
+  return(
+    <ul>
+      {persons
+      .filter(person => person.name.toLowerCase().includes(pattern.toLowerCase()))
+      .map(person => <li key={person.name}>{person.name} {person.number}</li>)
+      }
+    </ul>
   )
 }
 
