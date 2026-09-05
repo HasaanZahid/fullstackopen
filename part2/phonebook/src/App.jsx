@@ -37,6 +37,17 @@ const App = () => {
     setNewNumber('')
   }
 
+  const removePerson = (id) => {
+    
+    personService
+    .remove(id)
+    .then(response => {
+      console.log(response)
+      const updatedPersons = persons.filter(person => person.id !== response.id)
+      setPersons(updatedPersons)
+    })
+  }
+
   const handleNewName = (event) => {
     setNewName(event.target.value)
   }
@@ -60,8 +71,10 @@ const App = () => {
       nameVal={newName} numVal={newNumber} 
       nameChange={handleNewName} numChange={handleNewNumber} />
 
+
+
       <h3>Numbers</h3>
-      <Persons persons={persons} pattern={pattern} />
+      <Persons persons={persons} pattern={pattern} removefunc={removePerson}/>
 
     </div>
   )
@@ -91,13 +104,25 @@ const PersonForm = ({onSubmit, nameVal, numVal, nameChange, numChange}) => {
   )
 }
 
-const Persons = ({persons, pattern}) => {
+const Persons = ({persons, pattern, removefunc}) => {
   return(
     <ul>
       {persons
       .filter(person => person.name.toLowerCase().includes(pattern.toLowerCase()))
-      .map(person => <li key={person.name}>{person.name} {person.number}</li>)
+      .map(person => 
+          <li key={person.id}>
+            {person.name} {person.number} 
+            <button key={person.id} onClick={() => {
+              if (window.confirm(`Delete ${person.name} ?`)){
+                removefunc(person.id)
+              }
+            }}>
+              delete
+            </button>
+          </li>
+          )
       }
+      
     </ul>
   )
 }
