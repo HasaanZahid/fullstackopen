@@ -1,13 +1,14 @@
 import { useState } from 'react'
 import { useEffect } from 'react'
 import personService from './services/persons.js'
-import axios from 'axios'
+import Notification from './components/Notification.jsx'
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [pattern, setNewPattern] = useState('')
+  const [message, setMessage] = useState(null)
 
   useEffect(() => {
     personService
@@ -24,8 +25,12 @@ const App = () => {
         ${newName} is already added to the phonebook,
         replace the old number with a new one?`)){
           updatePerson(nameID, newNumber)
+          setMessage(`Changed ${newName}`)
+          setTimeout(() => {
+            setMessage(null)
+          }, 4000)
           setNewName('')
-          setNewNumber('')
+          setNewNumber('')          
           return
         }
     }
@@ -44,7 +49,10 @@ const App = () => {
     personService
     .create(personObject)
     .then(response => setPersons(persons.concat(response)))
-
+    setMessage(`Added ${newName}`)
+    setTimeout(() => {
+      setMessage(null)
+    },4000)
     setNewName('')
     setNewNumber('')
   }
@@ -85,7 +93,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      
+      <Notification message={message} /> 
       <Filter pattern={pattern} onChange={handleNewPattern} />
       
       <h3>Add a new</h3>
@@ -148,5 +156,7 @@ const Persons = ({persons, pattern, removefunc}) => {
     </ul>
   )
 }
+
+
 
 export default App
