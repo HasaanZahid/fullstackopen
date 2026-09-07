@@ -2,6 +2,9 @@ import { useState } from 'react'
 import { useEffect } from 'react'
 import personService from './services/persons.js'
 import Notification from './components/Notification.jsx'
+import Filter from './components/Filter.jsx'
+import PersonForm from './components/PersonFrom.jsx'
+import Persons from './components/Persons.jsx'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -9,6 +12,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [pattern, setNewPattern] = useState('')
   const [message, setMessage] = useState(null)
+  const [messageType, setType] = useState('')
 
   useEffect(() => {
     personService
@@ -25,6 +29,7 @@ const App = () => {
         ${newName} is already added to the phonebook,
         replace the old number with a new one?`)){
           updatePerson(nameID, newNumber)
+          setType('change')
           setMessage(`Changed ${newName}`)
           setTimeout(() => {
             setMessage(null)
@@ -49,6 +54,7 @@ const App = () => {
     personService
     .create(personObject)
     .then(response => setPersons(persons.concat(response)))
+    setType('change')
     setMessage(`Added ${newName}`)
     setTimeout(() => {
       setMessage(null)
@@ -68,7 +74,6 @@ const App = () => {
   }
 
   const removePerson = (id) => {
-    
     personService
     .remove(id)
     .then(response => {
@@ -76,6 +81,11 @@ const App = () => {
       const updatedPersons = persons.filter(person => person.id !== response.id)
       setPersons(updatedPersons)
     })
+    .catch(error => {
+      setType('error')
+      setMessage(`Information of ${newName} 
+        has already been removed from the server`)
+    }) 
   }
 
   const handleNewName = (event) => {
@@ -93,7 +103,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={message} /> 
+      <Notification message={message} type={messageType} /> 
       <Filter pattern={pattern} onChange={handleNewPattern} />
       
       <h3>Add a new</h3>
@@ -109,54 +119,5 @@ const App = () => {
     </div>
   )
 }
-
-const Filter = ({pattern, onChange}) => {
-  return (
-    <div>
-    filter shown with <input value={pattern} onChange={onChange}/>
-    </div>
-  )
-}
-
-const PersonForm = ({onSubmit, nameVal, numVal, nameChange, numChange}) => {
-  return(
-    <form onSubmit={onSubmit}>
-      <div>
-        name: <input value={nameVal} onChange={nameChange} />
-      </div>
-      <div>
-        number: <input value={numVal} onChange={numChange} /> 
-      </div>
-      <div>
-        <button type="submit">add</button>
-      </div>
-    </form>
-  )
-}
-
-const Persons = ({persons, pattern, removefunc}) => {
-  return(
-    <ul>
-      {persons
-      .filter(person => person.name.toLowerCase().includes(pattern.toLowerCase()))
-      .map(person => 
-          <li key={person.id}>
-            {person.name} {person.number} 
-            <button key={person.id} onClick={() => {
-              if (window.confirm(`Delete ${person.name} ?`)){
-                removefunc(person.id)
-              }
-            }}>
-              delete
-            </button>
-          </li>
-          )
-      }
-      
-    </ul>
-  )
-}
-
-
 
 export default App
