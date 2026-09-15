@@ -4,6 +4,7 @@ import countryService from './services/countries'
 const App = () => {
   const [message, setMessage] = useState('')
   const [countryList, setCountryList] = useState([])
+  const [selectedCountry, setSelectedCountry] = useState(null)
   
   useEffect(() => {
     countryService.getAll().then(response => {
@@ -44,6 +45,9 @@ const App = () => {
           {filteredCountries.map(country => (
             <li key={country.cca3}>
               {country.name.common}{' '}
+              <button onClick = {() => setSelectedCountry(country)}>
+                show
+              </button>
             </li>
           ))}
         </ul>
@@ -51,6 +55,10 @@ const App = () => {
 
       {filteredCountries.length === 1 && (
         <Country country={filteredCountries[0]} />
+      )}
+
+      {selectedCountry && (
+       <Country country={selectedCountry} />
       )}
 
     </div>
