@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import countryService from './services/countries'
+import Country from './components/Country.jsx'
 
 const App = () => {
   const [message, setMessage] = useState('')
@@ -61,37 +62,6 @@ const App = () => {
        <Country country={selectedCountry} />
       )}
 
-    </div>
-  )
-}
-
-const Country = ({ country }) => {
-  return (
-    <div>
-      <h1>{country.name.common}</h1>
-
-
-      <p>
-        capital {country.capital?.join(', ')} 
-        <br />
-        area {country.area}
-      </p>
-
-      <h2>languages:</h2>
-
-      <ul>
-        {Object.values(country.languages || {}).map(language => (
-          <li key={language}>
-            {language}
-          </li>
-        ))}
-      </ul>
-
-      <img
-        src={country.flags.png}
-        alt={`Flag of ${country.name.common}`}
-        width="150"
-      />
     </div>
   )
 }
